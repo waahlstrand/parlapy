@@ -1,0 +1,23 @@
+{
+    "query": "sok", 
+    "kind": "doktyp", 
+    "rm": "rm", 
+    "from": "from",
+    "to":"tom", 
+    "ts":"ts", 
+    "bet":"bet", 
+    "tempbet":"tempbet",
+    "nr":"nr",
+    "org":"org", 
+    "iid":"iid",
+    "avd":"avd",
+    "webbtv": "webbtv",
+    "speaker": "talare", 
+    "exakt":"exakt",
+    "planering":"planering", 
+    "facets":"facets",
+    "sort":"sort", 
+    "rel":"rel",
+    "sortorder": "sortorder",
+    "rapport": "rapport"
+}

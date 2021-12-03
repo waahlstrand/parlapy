@@ -14,3 +14,9 @@ class ParserAlreadyExistsException(ParlapyException):
         super().__init__(f"""
             The parser already exists.
         """)
+
+class NoDocumentsExistException(ParlapyException):
+    def __init__(self, response) -> None:
+        super().__init__(f"""
+            No documents with these settings exist. Response: {response.url}
+        """)

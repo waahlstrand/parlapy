@@ -1,8 +1,11 @@
 import requests
-import copy
+from requests.exceptions import ConnectionError
+import time
 import json
 from typing import *
 from functools import lru_cache
+import os
+from parlapy.exceptions import NoDocumentsExistException
 from . import utils
 from .parsers import ParserFactory
 
@@ -42,6 +45,33 @@ class API(object):
     def __repr__(self) -> str:
         return self.url
 
+
+    def _get_data(self, params: Dict):
+
+        limit = params.get('limit', None)
+        kind  = params.get('kind', None)
+        n_hits = 0
+        page = 1
+        has_more = True
+        
+        allow_more_hits = lambda x, y: ((x < y)) if limit else (x < N_MAX_HITS)
+
+        # Make initial request
+        response = self._get_response(params, page)
+        content = response.get(self.content)
+
+        # Collect hits
+        hits = content.get(self.hits)
+
+        n_pages = int(content.get("@sidor", 0))
+
+        if page < n_pages:
+
+            for page in range(page+1, n_pages):
+                # Collect hits
+                pass
+
+
     def _get_data(self, params: Dict):
 
         limit = params.get('limit', None)
@@ -52,14 +82,33 @@ class API(object):
         n_hits = 0
         page = 1
         has_more = True
+
         while has_more:
 
             # Make call to API
-            response = self._get_response(params, page)
+            # Allow 10 re-tries
+            n_trials = 10
+            while True:
+                n_trials -= 1
+                try:
+                    # Make request
+                    response = self._get_response(params, page)
+
+                    break
+                except ConnectionError as err:
+                    if n_trials == 0:
+                        raise err
+                    else:
+                        time.sleep(1)
 
             # Parse content
             content = response.get(self.content)
             hits = content.get(self.hits)
+
+            if not hits:
+                # raise NoDocumentsExistException(response)
+                hits = []
+
 
             # If we have a set document kind, we only need one parser
             if kind is not None:
@@ -104,29 +153,12 @@ class API(object):
 
 class Documents(API):
 
-    param_map = {
-        'query': 'sok', 
-        'kind': 'doktyp', 
-        'rm': 'rm', 
-        'from': 'from',
-        'to':'tom', 
-        'ts':'ts', 
-        'bet':'bet', 
-        'tempbet':'tempbet',
-        'nr':'nr',
-        'org':'org', 
-        'iid':'iid',
-        'avd':'avd',
-        'webbtv': 'webbtv',
-        'speaker': 'talare', 
-        'exakt':'exakt',
-        'planering':'planering', 
-        'facets':'facets',
-        'sort':'sort', 
-        'rel':'rel',
-        'sortorder': 'sortorder',
-        'rapport': 'rapport'
-    }
+    config_path = 'configs/search.json'
+
+    filename = os.path.join(os.path.dirname(__file__), config_path)
+
+    with open(filename, 'r') as f:
+        param_map = json.load(f)
 
     parameters = param_map.values()
     filters = param_map.keys()
