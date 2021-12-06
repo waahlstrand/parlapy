@@ -34,6 +34,14 @@ class Person(Riksdagsdata):
     def __repr__(self):
         return str(self)
 
+    def to_dict(self): 
+
+        return {
+            'name': self.name,
+            'party': self.party
+        }
+
+
 def get_document(url: str, **params: Optional[Dict]):
 
     if url is not None:
@@ -91,5 +99,15 @@ class Motion(Document):
 
     def __repr__(self) -> str:
         return str(self)
-        
+
+    def to_dict(self):
+
+        return {
+            'doc_id': self.doc_id,
+            'date': self.date,
+            'title': self.title,
+            'subtitle': self.subtitle,
+            'authors': [author.to_dict() for author in self.authors],
+            'document_url': self.document_url,
+        }
 
