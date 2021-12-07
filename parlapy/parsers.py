@@ -68,6 +68,7 @@ class MotionParser(Parser):
         title               = response.get('titel', None)
         subtitle            = response.get('undertitel', None)
         doc_id              = response.get('dok_id', None)
+        summary             = response.get('summary', None)
         author_list         = response.get('dokintressent', []) 
         document_url_text   = response.get('dokument_url_text', None)
 
@@ -80,7 +81,7 @@ class MotionParser(Parser):
         # Parse the author list
         authors = self._parse_persons(author_list)
 
-        return Motion(id, doc_id, date, title, subtitle, document_url, authors)
+        return Motion(id, doc_id, date, title, subtitle, document_url, summary, authors)
 
 
     def _parse_document_url(self, url: str) -> str:

@@ -62,6 +62,7 @@ class Motion(Document):
                        title: str,
                        subtitle: str,
                        document_url: str,
+                       summary: str,
                        authors: List[Person]) -> None:
         
         super().__init__(id)
@@ -71,6 +72,7 @@ class Motion(Document):
         self.title = title
         self.subtitle = subtitle
         self.authors = authors
+        self.summary = summary
         self.document_url = document_url
 
         self.text = None

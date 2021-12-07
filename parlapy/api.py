@@ -73,10 +73,9 @@ class API(object):
         if page < n_pages:
 
             progress = tqdm(total=n_pages)
-            progress.update(1)
             n_trials = 10
 
-            for page in range(page+1, n_pages+1):
+            for page in range(page, n_pages+1):
 
                 # Collect hits on current page
                 hits = self._get_hits(params, page, n_trials=n_trials)
