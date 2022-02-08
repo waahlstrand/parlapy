@@ -48,8 +48,8 @@ def get_document(url: str, **params: Optional[Dict]):
         try:
             response = requests.get(url, **params)
             return response
-        except requests.exceptions.RequestException:
-            raise DocumentDoesNotExistException(url)
+        except requests.exceptions.RequestException as e:
+            print(e)
     else:
         raise DocumentDoesNotExistException(url) 
 
@@ -85,7 +85,7 @@ class Motion(Document):
         if self.text is None:
             self.text = get_document(text_url, **params)
 
-        return self.text
+        return self
 
     def to_html(self, **params: Optional[Dict]) -> str:
 
@@ -93,7 +93,7 @@ class Motion(Document):
         if self.html is None:
             self.html = get_document(html_url, **params)
 
-        return self.html.text
+        return self
 
 
     def __str__(self) -> str:

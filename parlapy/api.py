@@ -67,10 +67,9 @@ class API(object):
         # Collect hits
         hits = content.get(self.hits, [])
 
-        n_pages = int(content.get("@sidor", 0))
+        n_pages = int(content.get("@sidor", 1))
         page = int(content.get("@sida", 1))
-
-        if page < n_pages:
+        if page <= n_pages:
 
             progress = tqdm(total=n_pages)
             n_trials = 10
@@ -79,7 +78,6 @@ class API(object):
 
                 # Collect hits on current page
                 hits = self._get_hits(params, page, n_trials=n_trials)
-
                 if kind is not None:
                     parser = ParserFactory.create(kind)
 
@@ -132,8 +130,19 @@ class API(object):
 
         return response.json()
 
-    def collect(self):
-        return [x for x in self.get()]
+    def collect(self, fs = [lambda x: x]):
+
+        xs = []
+
+        for x in self.get():
+
+            for f in fs:
+                x = f(x)
+
+            xs.append(x)
+
+        return xs
+        # return [x for x in self.get()]
 
 
 class Documents(API):
